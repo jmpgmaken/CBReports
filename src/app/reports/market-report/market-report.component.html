@@ -1,7 +1,6 @@
 <div [formGroup]="filterFormGroup">
   <input type="text" placeholder="element" formControlName="element" />
   <input type="text" placeholder="min stars" formControlName="minStars" />
-  <input type="text" placeholder="max stars" formControlName="maxStars" />
   <input type="text" placeholder="min power" formControlName="minPower" />
   <button (click)="submit()">submit</button>
 </div>
@@ -26,3 +25,8 @@
     <td>{{item.stat3Value}} {{item.stat3Element}}</td>
   </tr>
 </table>
+
+
+<audio #audioOption>
+  <source src='../../../assets/sounds/alert.mp3' type="audio/mp3">
+</audio>

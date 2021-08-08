@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { typeWithParameters } from '@angular/compiler/src/render3/util';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { filter } from 'rxjs/operators';
 import { CrudService } from 'src/app/service/crud.service';
@@ -9,6 +10,7 @@ import { CrudService } from 'src/app/service/crud.service';
   styleUrls: ['./market-report.component.less'],
 })
 export class MarketReportComponent implements OnInit {
+  @ViewChild('audioOption') audioPlayerRef: ElementRef;
   public filterFormGroup: FormGroup;
   public results: any;
 
@@ -16,7 +18,10 @@ export class MarketReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeFormGroup();
-    this.getMarketReport();
+    this.getMarketReportEveryMinute();
+    setInterval(() => {
+      this.getMarketReportEveryMinute();
+    }, 60000);
   }
 
   initializeFormGroup(): void {
@@ -35,10 +40,40 @@ export class MarketReportComponent implements OnInit {
       )
       .subscribe((res: any) => {
         let filteredData = [];
-        if(res.results?.length){
-          filteredData = res.results.filter(val => this.filterByMinPower(val))
+        if (res.results?.length) {
+          filteredData = res.results.filter((val) =>
+            this.filterByMinPower(val)
+          );
         }
         this.results = filteredData;
+      });
+  }
+
+  getMarketReportEveryMinute(): void {
+    this.crudService
+      .get(
+        `https://api.cryptoblades.io/static/market/weapon?element=&minStars=5&maxStars=&sortBy=price&sortDir=1&pageSize=60&pageNum=0`
+      )
+      .subscribe((res: any) => {
+        if (res.results?.length) {
+          let filteredData = [];
+          res.results.forEach((weaponVal) => {
+            if (
+              weaponVal.stat1Value >= 350 &&
+              weaponVal.stat2Value >= 350 &&
+              weaponVal.stat3Value >= 350
+            ) {
+              filteredData.push(weaponVal);
+            }
+          });
+          if (filteredData.length) {
+
+            this.audioPlayerRef.nativeElement.play();
+            this.audioPlayerRef.nativeElement.muted = false;
+            alert("check new list");
+            this.results = res.results;
+          }
+        }
       });
   }
 
@@ -50,8 +85,7 @@ export class MarketReportComponent implements OnInit {
         weaponVal.stat3Value >= this.filterFormGroup.value.minPower
       ) {
         return true;
-      }
-      else return false;
+      } else return false;
     } else if (
       this.filterFormGroup.value.minStars < 5 &&
       this.filterFormGroup.value.minStars >= 3
@@ -61,16 +95,14 @@ export class MarketReportComponent implements OnInit {
         weaponVal.stat2Value >= this.filterFormGroup.value.minPower
       ) {
         return true;
-      }
-      else return false;
+      } else return false;
     } else if (
       this.filterFormGroup.value.minStars < 3 &&
       this.filterFormGroup.value.minStars >= 1
     ) {
       if (weaponVal.stat1Value >= this.filterFormGroup.value.minPower) {
         return true;
-      }
-      else return false;
+      } else return false;
     } else {
       return true;
     }
