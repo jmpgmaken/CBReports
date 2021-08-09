@@ -7,7 +7,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
 import { CrudService } from 'src/app/service/crud.service';
 
 @Component({
@@ -18,12 +17,13 @@ import { CrudService } from 'src/app/service/crud.service';
 export class MarketReportComponent implements OnInit {
   @ViewChild('audioOption') audioPlayerRef: ElementRef;
   public filterFormGroup: FormGroup;
-  public results: any;
+  public results: Array<any>;
   public isNotified: any;
   public showAutoSearchField: boolean;
   public minPower: number = 350;
   public currentPageNumber: number = 1;
   public totalPageNumber: number = 1;
+  public snipedResults: Array<any>;
 
   constructor(private crudService: CrudService) {}
 
@@ -32,7 +32,7 @@ export class MarketReportComponent implements OnInit {
     this.getMarketReportEveryMinute();
     setInterval(() => {
       this.getMarketReportEveryMinute();
-    }, 30000);
+    }, 10000);
   }
 
   initializeFormGroup(): void {
@@ -51,7 +51,11 @@ export class MarketReportComponent implements OnInit {
   getMarketReport(pageNum: number): void {
     this.crudService
       .get(
-        `https://api.cryptoblades.io/static/market/weapon?element=${this.filterFormGroup.value.element}&minStars=${this.filterFormGroup.value.minStars}&maxStars=${this.filterFormGroup.value.maxStars}&sortBy=price&sortDir=1&pageSize=60&pageNum=${pageNum - 1}`
+        `https://api.cryptoblades.io/static/market/weapon?element=${
+          this.filterFormGroup.value.element
+        }&minStars=${this.filterFormGroup.value.minStars}&maxStars=${
+          this.filterFormGroup.value.maxStars
+        }&sortBy=price&sortDir=1&pageSize=60&pageNum=${pageNum - 1}`
       )
       .subscribe((res: any) => {
         this.currentPageNumber = res.page.curPage + 1;
@@ -77,16 +81,32 @@ export class MarketReportComponent implements OnInit {
       )
       .subscribe((res: any) => {
         if (res.results?.length) {
+          const getResults = localStorage.getItem('results');
           let filteredData = [];
           filteredData = res.results.filter((val) =>
             this.getFilteredList(val, 5, this.minPower)
           );
-          if (filteredData.length) {
-            this.results = res.results;
-            this.playSound();
-            this.isNotified = setInterval(() => {
+          if (!getResults) {
+            localStorage.setItem('results', JSON.stringify(filteredData));
+            if (filteredData.length) {
+              this.snipedResults = filteredData;
               this.playSound();
-            }, 3000);
+              this.isNotified = setInterval(() => {
+                this.playSound();
+              }, 3000);
+            }
+          } else {
+            if (getResults != JSON.stringify(filteredData)) {
+              localStorage.setItem('results', JSON.stringify(filteredData));
+
+              if (filteredData.length) {
+                this.snipedResults = filteredData;
+                this.playSound();
+                this.isNotified = setInterval(() => {
+                  this.playSound();
+                }, 3000);
+              }
+            }
           }
         }
       });
@@ -117,8 +137,8 @@ export class MarketReportComponent implements OnInit {
     }
   }
 
-   //#region Pagination Events
-   onClickPrevious(currentPageNumber: number): void {
+  //#region Pagination Events
+  onClickPrevious(currentPageNumber: number): void {
     this.currentPageNumber = currentPageNumber;
     this.getMarketReport(currentPageNumber);
   }
@@ -136,6 +156,9 @@ export class MarketReportComponent implements OnInit {
   playSound(): void {
     this.audioPlayerRef.nativeElement.muted = false;
     this.audioPlayerRef.nativeElement.play();
+  }
+  clearSnipedItems(): void {
+    this.snipedResults = [];
   }
 
   submit(): void {

@@ -16,6 +16,7 @@
       <div class="col-sm-4">
         <input
           class="form-control"
+          type="number"
           placeholder="min stars"
           formControlName="minStars"
         />
@@ -23,7 +24,7 @@
       <div class="col-sm-4">
         <input
           class="form-control"
-          type="text"
+          type="number"
           placeholder="min power"
           formControlName="minPower"
         />
@@ -109,3 +110,5 @@
     muted="muted"
   />
 </audio>
+
+<app-table-modal *ngIf="snipedResults?.length" [results]="snipedResults" (eventEmitter)="clearSnipedItems()"></app-table-modal>

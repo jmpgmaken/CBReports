@@ -7,12 +7,14 @@ import { MarketReportComponent } from './reports/market-report/market-report.com
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PaginationComponent } from './shared/pagination/pagination.component';
+import { TableModalComponent } from './shared/table-modal/table-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MarketReportComponent,
-    PaginationComponent
+    PaginationComponent,
+    TableModalComponent
   ],
   imports: [
     BrowserModule,
