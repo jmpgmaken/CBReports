@@ -32,7 +32,7 @@ export class MarketReportComponent implements OnInit {
     this.getMarketReportEveryMinute();
     setInterval(() => {
       this.getMarketReportEveryMinute();
-    }, 10000);
+    }, 30000);
   }
 
   initializeFormGroup(): void {
