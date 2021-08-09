@@ -7,6 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { CrudService } from 'src/app/service/crud.service';
 
 @Component({
@@ -24,6 +25,7 @@ export class MarketReportComponent implements OnInit {
   public currentPageNumber: number = 1;
   public totalPageNumber: number = 1;
   public snipedResults: Array<any>;
+  public array: Array<any> = [];
 
   constructor(private crudService: CrudService) {}
 
@@ -74,42 +76,58 @@ export class MarketReportComponent implements OnInit {
       });
   }
 
-  getMarketReportEveryMinute(): void {
-    this.crudService
-      .get(
-        `https://api.cryptoblades.io/static/market/weapon?element=&minStars=5&maxStars=&sortBy=price&sortDir=1&pageSize=60&pageNum=0`
-      )
-      .subscribe((res: any) => {
-        if (res.results?.length) {
-          const getResults = localStorage.getItem('results');
-          let filteredData = [];
-          filteredData = res.results.filter((val) =>
-            this.getFilteredList(val, 5, this.minPower)
-          );
-          if (!getResults) {
-            localStorage.setItem('results', JSON.stringify(filteredData));
-            if (filteredData.length) {
-              this.snipedResults = filteredData;
-              this.playSound();
-              this.isNotified = setInterval(() => {
-                this.playSound();
-              }, 3000);
+  getMarketReportEveryMinute() {
+    let sortedArray = [];
+    Promise.resolve().then(() => {
+      for (let index = 0; index < 4; index++) {
+        this.crudService
+          .get(
+            `https://api.cryptoblades.io/static/market/weapon?element=&minStars=5&maxStars=&sortBy=price&sortDir=1&pageSize=60&pageNum=${index}`
+          )
+          .subscribe((res: any) => {
+            if(res.results?.length){
+              this.array = sortedArray.concat(res.results);
             }
-          } else {
-            if (getResults != JSON.stringify(filteredData)) {
-              localStorage.setItem('results', JSON.stringify(filteredData));
+          });
+      }
+    });
+    if (this.array?.length) {
+      const getResults = localStorage.getItem('results');
+      let filteredData = [];
+      filteredData = this.array.filter((val) =>
+        this.getFilteredList(val, 5, this.minPower)
+      );
+      if (!getResults) {
+        localStorage.setItem('results', JSON.stringify(filteredData));
+        if (filteredData.length) {
+          this.snipedResults = filteredData;
+          this.playSound();
+          this.isNotified = setInterval(() => {
+            this.playSound();
+          }, 3000);
+        }
+      } else {
+        if (getResults != JSON.stringify(filteredData)) {
+          localStorage.setItem('results', JSON.stringify(filteredData));
 
-              if (filteredData.length) {
-                this.snipedResults = filteredData;
-                this.playSound();
-                this.isNotified = setInterval(() => {
-                  this.playSound();
-                }, 3000);
-              }
-            }
+          if (filteredData.length) {
+            this.snipedResults = filteredData;
+            this.playSound();
+            this.isNotified = setInterval(() => {
+              this.playSound();
+            }, 3000);
           }
         }
+      }
+    }
+  }
+
+  sortData(): any {
+    if (this.array?.length) {
+      this.array.sort((a, b) => {
+        return parseFloat(a.price) - parseFloat(b.price);
       });
+    }
   }
 
   getFilteredList(weaponVal: any, stars: number, minPower: number) {

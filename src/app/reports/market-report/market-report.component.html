@@ -19,6 +19,8 @@
           type="number"
           placeholder="min stars"
           formControlName="minStars"
+          max="5"
+          min="0"
         />
       </div>
       <div class="col-sm-4">
@@ -27,6 +29,7 @@
           type="number"
           placeholder="min power"
           formControlName="minPower"
+          min="0"
         />
       </div>
     </div>
@@ -105,7 +108,7 @@
 
 <audio #audioOption>
   <source
-    src="../../../assets/sounds/alert.mp3"
+    src="../../../assets/sounds/alert.wav"
     type="audio/wav"
     muted="muted"
   />
