@@ -1,15 +1,30 @@
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+.container {
+  padding-top: 30px;
+  table {
+    margin-top: 40px;
+  }
+
+  .form-control {
+    margin: 10px 0 30px 0;
+  }
 }
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
+.floating-control {
+  position: fixed;
+  bottom: 10%;
+  right: 10%;
+  &__container {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid rgb(230, 230, 230);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 15px;
+  }
+  button {
+    font-weight: bolder;
+    font-size: 20px;
+    border-radius: 50%;
+    float: right;
+  }
 }
