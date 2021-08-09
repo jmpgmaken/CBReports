@@ -139,6 +139,6 @@ export class MarketReportComponent implements OnInit {
   }
 
   submit(): void {
-    this.getMarketReport(0);
+    this.getMarketReport(1);
   }
 }
