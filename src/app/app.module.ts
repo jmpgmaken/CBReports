@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { MarketReportComponent } from './reports/market-report/market-report.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PaginationComponent } from './shared/pagination/pagination.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MarketReportComponent
+    MarketReportComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

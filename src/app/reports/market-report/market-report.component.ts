@@ -22,6 +22,8 @@ export class MarketReportComponent implements OnInit {
   public isNotified: any;
   public showAutoSearchField: boolean;
   public minPower: number = 350;
+  public currentPageNumber: number = 1;
+  public totalPageNumber: number = 1;
 
   constructor(private crudService: CrudService) {}
 
@@ -46,12 +48,14 @@ export class MarketReportComponent implements OnInit {
     clearInterval(this.isNotified);
   }
 
-  getMarketReport(): void {
+  getMarketReport(pageNum: number): void {
     this.crudService
       .get(
-        `https://api.cryptoblades.io/static/market/weapon?element=${this.filterFormGroup.value.element}&minStars=${this.filterFormGroup.value.minStars}&maxStars=${this.filterFormGroup.value.maxStars}&sortBy=price&sortDir=1&pageSize=60&pageNum=0`
+        `https://api.cryptoblades.io/static/market/weapon?element=${this.filterFormGroup.value.element}&minStars=${this.filterFormGroup.value.minStars}&maxStars=${this.filterFormGroup.value.maxStars}&sortBy=price&sortDir=1&pageSize=60&pageNum=${pageNum - 1}`
       )
       .subscribe((res: any) => {
+        this.currentPageNumber = res.page.curPage + 1;
+        this.totalPageNumber = res.page.numPages;
         let filteredData = [];
         if (res.results?.length) {
           filteredData = res.results.filter((val) =>
@@ -113,12 +117,28 @@ export class MarketReportComponent implements OnInit {
     }
   }
 
+   //#region Pagination Events
+   onClickPrevious(currentPageNumber: number): void {
+    this.currentPageNumber = currentPageNumber;
+    this.getMarketReport(currentPageNumber);
+  }
+
+  onClickNext(currentPageNumber: number): void {
+    this.currentPageNumber = currentPageNumber;
+    this.getMarketReport(currentPageNumber);
+  }
+
+  onEnter(currentPageNumber: number): void {
+    this.currentPageNumber = currentPageNumber;
+    this.getMarketReport(currentPageNumber);
+  }
+
   playSound(): void {
     this.audioPlayerRef.nativeElement.muted = false;
     this.audioPlayerRef.nativeElement.play();
   }
 
   submit(): void {
-    this.getMarketReport();
+    this.getMarketReport(0);
   }
 }

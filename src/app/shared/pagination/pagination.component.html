@@ -1,0 +1,24 @@
+<div class="f-form_pagination">
+  <button type="button" class="arrow left"
+          [title]="titlePrevious ? titlePrevious : ''"
+          [attr.ngbTooltip]="titlePrevious"
+          [attr.placement]="titlePreviousPosition"
+          [class.disabled]="isAbleToPrevious"
+          [disabled]="isAbleToPrevious"
+          (click)="onClickPrevious($event)">
+    <!-- <span class="ceb-ico ico-previous-page"></span> -->
+  </button>
+  <div class="mx-3">
+    <input #inputCurrentPageNumber type="text" class="current-page-number" [value]="currentPageNumber" (keydown.Enter)="onKeyDownEnter($event)" number-only="true" />
+    / <span>{{ totalPageNumber }}</span>
+  </div>
+  <button type="button" class="arrow right"
+          [title]="titleNext ? titleNext : ''"
+          [attr.ngbTooltip]="titleNext"
+          [attr.placement]="titleNextPosition"
+          [class.disabled]="isAbleToNext"
+          [disabled]="isAbleToNext"
+          (click)="onClickNext($event)">
+    <!-- <span class="ceb-ico ico-next-page"></span> -->
+  </button>
+</div>

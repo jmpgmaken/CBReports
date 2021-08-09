@@ -1,0 +1,61 @@
+.f-form_pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 3px;
+  border-radius: 1px;
+  height: 7px;
+  width: 7px;
+  background-color: transparent;
+  margin: 0 15px;
+  &:hover {
+    border: solid #ffc400;
+    border-width: 0 2px 2px 0;
+    cursor: pointer;
+  }
+  &.disabled {
+    border: solid gray;
+    border-width: 0 2px 2px 0;
+    cursor:  initial;
+  }
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.current-page-number {
+  outline: none;
+  max-width: 35px;
+  height: 35px;
+  border: 1px solid gray;
+  padding: 3px;
+  text-align: center;
+  border-radius: 5px;
+  &:hover {
+    font-weight: bold;
+  }
+}

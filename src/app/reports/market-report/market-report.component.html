@@ -36,7 +36,7 @@
     </div>
   </div>
 
-  <table class="table table-striped">
+  <table class="table table-striped"  *ngIf="results?.length">
     <thead>
       <tr>
         <th scope="col">Price</th>
@@ -60,14 +60,37 @@
       </tr>
     </tbody>
   </table>
+
+  <app-pagination
+    *ngIf="results?.length"
+    [currentPageNumber]="currentPageNumber"
+    [totalPageNumber]="totalPageNumber"
+    [isAbleToPrevious]="
+      !(currentPageNumber > 1 && currentPageNumber <= totalPageNumber)
+    "
+    [isAbleToNext]="
+      !(currentPageNumber >= 1 && currentPageNumber < totalPageNumber)
+    "
+    (on-click-previous)="onClickPrevious($event)"
+    (on-click-next)="onClickNext($event)"
+    (on-enter)="onEnter($event)"
+  >
+  </app-pagination>
 </div>
 
 <div class="floating-control">
   <div class="floating-control__container" *ngIf="showAutoSearchField">
-    <div class="form-group" >
-      <input type="number" [(ngModel)]="minPower" name="minPower" class="form-control" placeholder="Minimum stat" />
+    <div class="form-group">
+      <input
+        type="number"
+        [(ngModel)]="minPower"
+        name="minPower"
+        class="form-control"
+        placeholder="Minimum stat"
+      />
       <small class="form-text text-muted"
-        >Set minimum stats for auto search 5 star. <br>(every 30 seconds)</small
+        >Set minimum stats for auto search 5 star. <br />Limited to 60 items (every 30
+        seconds)</small
       >
     </div>
   </div>
